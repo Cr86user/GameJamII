@@ -5,6 +5,9 @@ TagManager:
   serializedVersion: 2
   tags:
   - ground
+  - Chair
+  - Table
+  - Table2
   layers:
   - Default
   - TransparentFX
