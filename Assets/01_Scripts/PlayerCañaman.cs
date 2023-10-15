@@ -1,9 +1,8 @@
-using System.Collections;
-using System.Collections.Generic;
-using UnityEditor.Experimental.GraphView;
+using System.IO;
 using UnityEngine;
 using UnityEngine.SceneManagement;
-using UnityEngine.UIElements;
+using UnityEngine.UI;
+
 
 public class PlayerCañaman : MonoBehaviour
 {
@@ -11,6 +10,9 @@ public class PlayerCañaman : MonoBehaviour
     public float velocidadRotacion = 200.0f;
     public Animator anim;
     public float x, y;
+
+    public int vidaMax;
+    public int vidaActual;
 
     public Rigidbody rb;
     public float fuerzaSalto = 8f;
@@ -29,6 +31,10 @@ public class PlayerCañaman : MonoBehaviour
     public Vector3 sitOffset; // Offset de posición para que el personaje se siente en relación con la silla.
     public Quaternion sitRotation; // Rotación para el personaje cuando se sienta en la silla.
 
+    [Header("Vida")]
+    public Image lifeBar;
+    public float tiempoParaReducirVida = 30f; // 2 minutos en segundos
+    public int reduccionDeVida = 1; // La cantidad de vida que se reducirá
 
     void Start()
     {
@@ -37,24 +43,27 @@ public class PlayerCañaman : MonoBehaviour
         isSitting = false;
         originalPosition = transform.position;
         originalRotation = transform.rotation;
+
+        vidaActual = vidaMax;
+        lifeBar.fillAmount = vidaActual / vidaMax;
+
+        // Llama a la función ReducirVida repetidamente cada 2 minutos
+        InvokeRepeating("ReducirVida", tiempoParaReducirVida, tiempoParaReducirVida);
     }
+
     void FixedUpdate()
     {
         Movement();
     }
 
-    // Update is called once per frame
     void Update()
     {
         ChangeScene();
         x = Input.GetAxis("Horizontal");
         y = Input.GetAxis("Vertical");
-        
-        Drinka();
-        //SitDown();
-        Sit();
 
-      
+        Drinka();
+        Sit();
 
         anim.SetFloat("VelX", x);
         anim.SetFloat("VelY", y);
@@ -63,27 +72,16 @@ public class PlayerCañaman : MonoBehaviour
         {
             if (Input.GetKeyDown(KeyCode.Space))
             {
-                anim.SetBool("Jump",true);
-                rb.AddForce(new Vector3 (0, fuerzaSalto, 0),ForceMode.Impulse);
+                anim.SetBool("Jump", true);
+                rb.AddForce(new Vector3(0, fuerzaSalto, 0), ForceMode.Impulse);
             }
-            anim.SetBool("Toco",true);
+            anim.SetBool("Toco", true);
         }
         else
         {
             EstoyCayendo();
         }
-
-    }
-
-    void Drinka()
-    {
-        if (Input.GetKeyDown(KeyCode.R))
-        {
-            //anim.SetBool("tomar", true);
-            anim.SetTrigger("Drink");
-
-            //Drink = true;
-        }
+        
     }
 
     void Movement()
@@ -99,51 +97,6 @@ public class PlayerCañaman : MonoBehaviour
             rb.velocity = transform.forward * fastDrink;
         }
     }
-
-    /*public void SitDown()
-    {
-        if (Input.GetKeyDown(KeyCode.F))
-        {
-            if (isSitting)
-            {
-                anim.SetBool("Sit", false);
-                isSitting = false;
-            }
-            else
-            {
-                Collider[] chairs = Physics.OverlapSphere(transform.position, 1.0f);
-                foreach (Collider chair in chairs)
-                {
-                    if (chair.CompareTag("Chair"))
-                    {
-                        anim.SetBool("Sit", true);
-                        isSitting = true;
-                        break;
-                    }
-                }
-            }
-        }
-    }*/
-
-    /*public void OnCollisionEnter(Collision collision)
-    {
-        if (collision.collider.CompareTag("Chair"))
-        {
-            if (!isSitting)
-            {
-                // Cambiar la animación y el estado del personaje a "sentado"
-                anim.SetBool("Sit", true);
-                isSitting = true;
-
-                // Cambiar la posición y rotación del personaje para que esté sentado en la silla
-                Vector3 chairPosition = collision.transform.position;
-                Quaternion chairRotation = collision.transform.rotation;
-                transform.position = chairPosition;
-                transform.rotation = chairRotation;
-            }
-        }
-    }*/
-
     void Sit()
     {
         if (Input.GetKeyDown(KeyCode.F))
@@ -182,19 +135,46 @@ public class PlayerCañaman : MonoBehaviour
 
     }
 
+    void ReducirVida()
+    {
+        // Reduz la vida actual del jugador
+        vidaActual -= reduccionDeVida;
+
+        // Actualiza la barra de vida
+        lifeBar.fillAmount = (float)vidaActual / vidaMax;
+
+        // Comprueba si el jugador ha perdido
+        if (vidaActual <= 0)
+        {
+            // Aquí puedes hacer algo cuando el jugador pierda, como cargar una pantalla de Game Over
+            Debug.Log("El jugador ha perdido");
+        }
+    }
+
+    // Resto de tus métodos...
+
+    void Drinka()
+    {
+        if (Input.GetKeyDown(KeyCode.R))
+        {
+            anim.SetTrigger("Drink");
+            vidaActual += 1;
+            lifeBar.fillAmount = vidaActual / vidaMax;
+        }
+    }
+
+    // Resto de tus métodos...
+
     void ChangeScene()
     {
         if (Input.GetKeyDown(KeyCode.E))
         {
-            Debug.Log("eeeeeeedetectada");
-
             Collider[] colliders = Physics.OverlapSphere(transform.position, detectionDistance);
 
             foreach (Collider collider in colliders)
             {
                 if (collider.CompareTag("Table"))
                 {
-                    Debug.Log("Mesa detectada");
                     SceneManager.LoadScene("2Scene");
                     break; // Sal del bucle si se encuentra una mesa.
                 }
@@ -202,22 +182,18 @@ public class PlayerCañaman : MonoBehaviour
         }
     }
 
-
     void OnTriggerEnter(Collider other)
     {
         if (other.CompareTag("Table"))
         {
             SceneManager.LoadScene("2Scene");
         }
+
         if (other.CompareTag("Table2"))
         {
             SceneManager.LoadScene("SampleScene");
         }
     }
-
-
-
-
 
     public void EstoyCayendo()
     {
@@ -228,19 +204,15 @@ public class PlayerCañaman : MonoBehaviour
     public void NotDrink()
     {
         Drink = false;
-
     }
 
     public void Avance()
     {
-
         avance = true;
     }
 
     public void NoAvance()
     {
-
         avance = false;
     }
-
 }
