@@ -32,6 +32,7 @@ public class PlayerCañaman : MonoBehaviour
     private Quaternion originalRotation;
     public Vector3 sitOffset; // Offset de posición para que el personaje se siente en relación con la silla.
     public Quaternion sitRotation; // Rotación para el personaje cuando se sienta en la silla.
+        
 
     [Header("Vida")]
     public Image lifeBar;
@@ -40,21 +41,20 @@ public class PlayerCañaman : MonoBehaviour
     public int vidaMax;
     public int vidaActual;
 
+    [Header("Sonidos")]
+    public AudioClip DeadSound;
+
     void Start()
     {
         puedoSaltar = false;
         anim = GetComponent<Animator>();
         isSitting = false;
-        originalPosition = transform.position;
-        originalRotation = transform.rotation;
+        //originalPosition = transform.position;
+        //originalRotation = transform.rotation;
 
         listaCamaras[0].gameObject.SetActive(true);
         listaCamaras[1].gameObject.SetActive(false);
-        puedoSaltar = false;
-        anim = GetComponent<Animator>();
-        isSitting = false;
-        originalPosition = transform.position;
-        originalRotation = transform.rotation;
+      
 
 
 
@@ -147,8 +147,21 @@ void Drinka()
 
             Debug.Log("El jugador ha perdido");
             anim.SetBool("Dead",true);
-           // GameObject.Destroy(gameObject);
-           Isdead = true;
+            // GameObject.Destroy(gameObject);
+
+            GameObject[] musicObjects = GameObject.FindGameObjectsWithTag("MusicaGame");
+
+            foreach (GameObject musicObject in musicObjects)
+            {
+                AudioGame audioComponent = musicObject.GetComponent<AudioGame>();
+                if (audioComponent != null)
+                {
+                    audioComponent.Stop();
+                }
+            }
+
+            AudioManager.instance.PlaySound(DeadSound);
+            Isdead = true;
         }
     }
   
