@@ -1184,11 +1184,14 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
-    m_AddedGameObjects: []
+    m_AddedGameObjects:
+    - targetCorrespondingSourceObject: {fileID: -8679921383154817045, guid: f6d72886d279c4b4c9a49dd716c77e37, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 2135174945}
     m_AddedComponents:
     - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: f6d72886d279c4b4c9a49dd716c77e37, type: 3}
       insertIndex: 1
-      addedObject: {fileID: 818980927}
+      addedObject: {fileID: 818980931}
     - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: f6d72886d279c4b4c9a49dd716c77e37, type: 3}
       insertIndex: -1
       addedObject: {fileID: 818980929}
@@ -1649,34 +1652,6 @@ GameObject:
   m_CorrespondingSourceObject: {fileID: 919132149155446097, guid: f6d72886d279c4b4c9a49dd716c77e37, type: 3}
   m_PrefabInstance: {fileID: 580945512}
   m_PrefabAsset: {fileID: 0}
---- !u!114 &818980927
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 818980924}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 23de3ba313e468741ae1a8d8ee1bf09c, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  velocidad: 15
-  velocidadRotacion: 150
-  anim: {fileID: 0}
-  x: 0
-  y: 0
-  rb: {fileID: 0}
-  fuerzaSalto: 8
-  puedoSaltar: 0
-  Drink: 0
-  avance: 0
-  fastDrink: 10
-  isSitting: 0
-  chair: {fileID: 212685574}
-  detectionDistance: 2
-  sitOffset: {x: 0, y: 0, z: 0}
-  sitRotation: {x: 0, y: 0, z: 0, w: 0}
 --- !u!4 &818980928 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: f6d72886d279c4b4c9a49dd716c77e37, type: 3}
@@ -1709,6 +1684,39 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 112
   m_CollisionDetection: 0
+--- !u!114 &818980931
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 818980924}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 23de3ba313e468741ae1a8d8ee1bf09c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  velocidad: 5
+  velocidadRotacion: 200
+  anim: {fileID: 0}
+  x: 0
+  y: 0
+  vidaMax: 10
+  vidaActual: 10
+  rb: {fileID: 0}
+  fuerzaSalto: 8
+  puedoSaltar: 0
+  Drink: 0
+  avance: 0
+  fastDrink: 10
+  isSitting: 0
+  chair: {fileID: 0}
+  detectionDistance: 200
+  sitOffset: {x: 0, y: 0, z: 0}
+  sitRotation: {x: 0, y: 0, z: 0, w: 0}
+  lifeBar: {fileID: 82809733}
+  tiempoParaReducirVida: 30
+  reduccionDeVida: 1
 --- !u!1 &821197436 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 8164078558771037576, guid: 71fc7a474b5bf9641a4e3ed368429c8f, type: 3}
@@ -3197,6 +3205,8 @@ MonoBehaviour:
   anim: {fileID: 0}
   x: 0
   y: 0
+  vidaMax: 10
+  vidaActual: 10
   rb: {fileID: 0}
   fuerzaSalto: 8
   puedoSaltar: 0
@@ -3208,6 +3218,9 @@ MonoBehaviour:
   detectionDistance: 2
   sitOffset: {x: 0, y: 0, z: 0}
   sitRotation: {x: 0, y: 0, z: 0, w: 0}
+  lifeBar: {fileID: 82809733}
+  tiempoParaReducirVida: 10
+  reduccionDeVida: 4
 --- !u!4 &1955970613 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 8862637521361381881, guid: f6d72886d279c4b4c9a49dd716c77e37, type: 3}
@@ -3510,7 +3523,7 @@ RectTransform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 467235851}
-  m_Father: {fileID: 0}
+  m_Father: {fileID: 818980928}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
@@ -3535,5 +3548,4 @@ SceneRoots:
   - {fileID: 178592109}
   - {fileID: 325557155}
   - {fileID: 2007579869}
-  - {fileID: 2135174945}
   - {fileID: 1592995020}
