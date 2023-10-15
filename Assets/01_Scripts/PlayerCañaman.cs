@@ -182,7 +182,18 @@ public class PlayerCañaman : MonoBehaviour
         }
     }
 
-    // Resto de tus métodos...
+    void OnTriggerEnter(Collider other)
+    {
+        if (other.CompareTag("Table"))
+        {
+            SceneManager.LoadScene("2Scene");
+        }
+
+        if (other.CompareTag("Table2"))
+        {
+            SceneManager.LoadScene("SampleScene");
+        }
+    }
 
     public void EstoyCayendo()
     {
