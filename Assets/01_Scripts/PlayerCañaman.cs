@@ -1,12 +1,15 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEditor.Experimental.GraphView;
 using UnityEngine;
+using UnityEngine.Analytics;
 using UnityEngine.SceneManagement;
-using UnityEngine.UIElements;
+using UnityEngine.UI;
 
 public class PlayerCañaman : MonoBehaviour
 {
+    public GameObject[] listaCamaras;
     public float velocidad = 5.0f;
     public float velocidadRotacion = 200.0f;
     public Animator anim;
@@ -23,12 +26,19 @@ public class PlayerCañaman : MonoBehaviour
 
     public Transform chair;
     public float detectionDistance = 200.0f;
+    public bool Isdead = false;
 
     private Vector3 originalPosition;
     private Quaternion originalRotation;
     public Vector3 sitOffset; // Offset de posición para que el personaje se siente en relación con la silla.
     public Quaternion sitRotation; // Rotación para el personaje cuando se sienta en la silla.
 
+    [Header("Vida")]
+    public Image lifeBar;
+    public float tiempoParaReducirVida = 30f; // 2 minutos en segundos
+    public int reduccionDeVida = 1; // La cantidad de vida que se reducirá
+    public int vidaMax;
+    public int vidaActual;
 
     void Start()
     {
@@ -37,10 +47,31 @@ public class PlayerCañaman : MonoBehaviour
         isSitting = false;
         originalPosition = transform.position;
         originalRotation = transform.rotation;
+
+        listaCamaras[0].gameObject.SetActive(true);
+        listaCamaras[1].gameObject.SetActive(false);
+        puedoSaltar = false;
+        anim = GetComponent<Animator>();
+        isSitting = false;
+        originalPosition = transform.position;
+        originalRotation = transform.rotation;
+
+
+
+        vidaActual = vidaMax;
+        lifeBar.fillAmount = vidaActual / vidaMax;
+
+
+
+        // Llama a la función ReducirVida repetidamente cada 2 minutos
+        InvokeRepeating("ReducirVida", tiempoParaReducirVida, tiempoParaReducirVida);
     }
     void FixedUpdate()
     {
-        Movement();
+        if (Isdead == false)
+        {
+            Movement();
+        }  
     }
 
     // Update is called once per frame
@@ -72,19 +103,55 @@ public class PlayerCañaman : MonoBehaviour
         {
             EstoyCayendo();
         }
+        if (Input.GetKey(KeyCode.Escape))
+        {
+            listaCamaras[0].gameObject.SetActive(true);
+            listaCamaras[1].gameObject.SetActive(false);
+        }
 
     }
 
-    void Drinka()
+void Drinka()
+
     {
+
         if (Input.GetKeyDown(KeyCode.R))
+
         {
-            //anim.SetBool("tomar", true);
+
             anim.SetTrigger("Drink");
 
-            //Drink = true;
+            vidaActual += 1;
+
+            lifeBar.fillAmount = vidaActual / vidaMax;
+
+        }
+
+    }
+    void ReducirVida()
+    {
+        // Reduz la vida actual del jugador
+        vidaActual -= reduccionDeVida;
+
+
+
+        // Actualiza la barra de vida
+        lifeBar.fillAmount = (float)vidaActual / vidaMax;
+
+
+
+        // Comprueba si el jugador ha perdido
+        if (vidaActual <= 0)
+        {
+            // Aquí puedes hacer algo cuando el jugador pierda, como cargar una pantalla de Game Over
+
+            Debug.Log("El jugador ha perdido");
+            anim.SetBool("Dead",true);
+           // GameObject.Destroy(gameObject);
+           Isdead = true;
         }
     }
+  
 
     void Movement()
     {
@@ -185,20 +252,9 @@ public class PlayerCañaman : MonoBehaviour
     void ChangeScene()
     {
         if (Input.GetKeyDown(KeyCode.E))
-        {
-            Debug.Log("eeeeeeedetectada");
-
-            Collider[] colliders = Physics.OverlapSphere(transform.position, detectionDistance);
-
-            foreach (Collider collider in colliders)
-            {
-                if (collider.CompareTag("Table"))
-                {
-                    Debug.Log("Mesa detectada");
-                    SceneManager.LoadScene("2Scene");
-                    break; // Sal del bucle si se encuentra una mesa.
-                }
-            }
+        {                       
+            SceneManager.LoadScene("MenuInicial");
+                    
         }
     }
 
@@ -207,18 +263,12 @@ public class PlayerCañaman : MonoBehaviour
     {
         if (other.CompareTag("Table"))
         {
-            SceneManager.LoadScene("2Scene");
+            listaCamaras[0].gameObject.SetActive(false);
+            listaCamaras[1].gameObject.SetActive(true);
         }
-        if (other.CompareTag("Table2"))
-        {
-            SceneManager.LoadScene("SampleScene");
-        }
+       
+     
     }
-
-
-
-
-
     public void EstoyCayendo()
     {
         //anim.SetBool("Toco", false);

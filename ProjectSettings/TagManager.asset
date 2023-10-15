@@ -8,6 +8,7 @@ TagManager:
   - Chair
   - Table
   - Table2
+  - CameraTable
   layers:
   - Default
   - TransparentFX
