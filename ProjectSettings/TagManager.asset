@@ -8,6 +8,9 @@ TagManager:
   - Chair
   - Table
   - Table2
+  - CameraTable
+  - Musica
+  - MusicaGame
   layers:
   - Default
   - TransparentFX
